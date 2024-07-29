@@ -53,11 +53,16 @@ EOF
 cd ~/cysic-verifier/
 
 # Make verifier executable
-chmod +x ~/cysic-verifier/verifier
+chmod +x verifier
 
 # Create start.sh
-echo "LD_LIBRARY_PATH=.:~/miniconda3/lib:$LD_LIBRARY_PATH export CHAIN_ID=534352 ./verifier" > ~/cysic-verifier/start.sh
-chmod +x ~/cysic-verifier/start.sh
+cat <<EOF > start.sh
+#!/bin/bash
+LD_LIBRARY_PATH=.:~/miniconda3/lib:\$LD_LIBRARY_PATH CHAIN_ID=534352 ./verifier
+EOF
+
+# Make start.sh executable
+chmod +x start.sh
 
 # Run the verifier
-~/cysic-verifier/start.sh
+./start.sh
