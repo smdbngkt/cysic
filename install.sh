@@ -21,7 +21,6 @@ echo -e "${RED}(_______/  |___|\\__/|___|(________/  ${NC}"
 echo -e "${CYAN} Cysic Testnet Node Installation ${NC}"
 
 # Remove old directory and create new one
-
 rm -rf ~/cysic-verifier
 mkdir ~/cysic-verifier
 
