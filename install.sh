@@ -27,8 +27,17 @@ mkdir ~/cysic-verifier
 
 # Download files
 echo "Downloading verifier and libzkp.so..."
-curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/verifier_linux > ~/cysic-verifier/verifier
-curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/libzkp.so > ~/cysic-verifier/libzkp.so
+curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/verifier_linux -o ~/cysic-verifier/verifier
+if [[ $? -ne 0 ]]; then
+  echo -e "${RED}Failed to download verifier${NC}"
+  exit 1
+fi
+
+curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/libzkp.so -o ~/cysic-verifier/libzkp.so
+if [[ $? -ne 0 ]]; then
+  echo -e "${RED}Failed to download libzkp.so${NC}"
+  exit 1
+fi
 
 # Prompt for claim reward address
 echo -e "${CYAN}Enter claim reward address:${NC}"
@@ -63,7 +72,7 @@ chmod +x verifier
 # Create start.sh
 cat <<EOF > start.sh
 #!/bin/bash
-export LD_LIBRARY_PATH=.:~/miniconda3/lib
+export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$(pwd)
 export CHAIN_ID=534352
 ./verifier
 EOF
@@ -71,5 +80,20 @@ EOF
 # Make start.sh executable
 chmod +x start.sh
 
+# Check dependencies
+ldd ./verifier | grep "not found"
+if [[ $? -eq 0 ]]; then
+  echo -e "${RED}Some dependencies are missing. Please install them before running the verifier.${NC}"
+  exit 1
+fi
+
 # Run the verifier
 ./start.sh
+
+# Check if verifier started successfully
+if [[ $? -ne 0 ]]; then
+  echo -e "${RED}Verifier failed to start${NC}"
+  exit 1
+fi
+
+echo -e "${GREEN}Verifier started successfully${NC}"
