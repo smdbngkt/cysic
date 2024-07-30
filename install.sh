@@ -49,6 +49,13 @@ server:
   cysic_endpoint: "https://api-testnet.prover.xyz"
 EOF
 
+# Verify that config.yaml was created
+if [ -f ~/cysic-verifier/config.yaml ]; then
+  echo "config.yaml created successfully."
+else
+  echo "Failed to create config.yaml."
+fi
+
 # Change to cysic-verifier directory
 cd ~/cysic-verifier/
 
