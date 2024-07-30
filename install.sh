@@ -23,13 +23,13 @@ log() {
 }
 
 # Display ASCII art
-"${RED}  ________  ___      ___  ________   ${NC}"
-"${GREEN} /\"       )|\"  \\    /\"  ||\"      \"\\  ${NC}"
-"${YELLOW}(:   \\___/  \\   \\  //   |(.  ___  :) ${NC}"
-"${BLUE} \\___  \\    /\\\\  \\/.    ||: \\   ) || ${NC}"
-"${MAGENTA}  __/  \\\\  |: \\.        |(| (___\\ || ${NC}"
-"${CYAN} /\" \\   :) |.  \\    /:  ||:       :) ${NC}"
-"${RED}(_______/  |___|\\__/|___|(________/  ${NC}"
+log -e "${RED}  ________  ___      ___  ________   ${NC}"
+log -e "${GREEN} /\"       )|\"  \\    /\"  ||\"      \"\\  ${NC}"
+log -e "${YELLOW}(:   \\___/  \\   \\  //   |(.  ___  :) ${NC}"
+log -e "${BLUE} \\___  \\    /\\\\  \\/.    ||: \\   ) || ${NC}"
+log -e "${MAGENTA}  __/  \\\\  |: \\.        |(| (___\\ || ${NC}"
+log -e "${CYAN} /\" \\   :) |.  \\    /:  ||:       :) ${NC}"
+log -e "${RED}(_______/  |___|\\__/|___|(________/  ${NC}"
 
 # Remove old directory and create new one
 log "Removing old directory and creating new one..."
@@ -53,7 +53,8 @@ else
 fi
 
 # Prompt for claim reward address
-read -p "Enter claim reward address: " address
+echo -e "${CYAN}Enter claim reward address:${NC}"
+read -p " " address
 log "Claim reward address entered: $address"
 
 # Create config.yaml
