@@ -95,4 +95,4 @@ screen -r cysic-installation
 
 ### Additional Resources
 
-For more information, refer to the [official Cysic Testnet Documentation](https://katherineoelsner.com/](https://medium.com/@cysic/join-the-cysic-testnet-as-a-verifier-7b9f31674b41) or join our community [discord](https://discord.gg/9vxGzxSV) for support.
+For more information, refer to the [official Cysic Testnet Documentation](https://medium.com/@cysic/join-the-cysic-testnet-as-a-verifier-7b9f31674b41) or join our community [discord](https://discord.gg/9vxGzxSV) for support.
