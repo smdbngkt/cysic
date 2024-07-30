@@ -18,10 +18,67 @@ echo -e "${MAGENTA}  __/  \\\\  |: \\.        |(| (___\\ || ${NC}"
 echo -e "${CYAN} /\" \\   :) |.  \\    /:  ||:       :) ${NC}"
 echo -e "${RED}(_______/  |___|\\__/|___|(________/  ${NC}"
 
+
 # Define variables
 VERIFIER_URL="https://cysic-verifiers.oss-accelerate.aliyuncs.com/verifier_linux"
 LIBZKP_URL="https://cysic-verifiers.oss-accelerate.aliyuncs.com/libzkp.so"
-CONFIG_DIR="~/cysic-verifier"
+CONFIG_DIR="$HOME/cysic-verifier"
+CONFIG_FILE="$CONFIG_DIR/config.yaml"
+START_SCRIPT="$CONFIG_DIR/start.sh"
 
-# Prompt for input and create directory, download files, configure and start
-read -p "Enter your EVM address to claim rewards: " claim_reward_address; rm -rf $CONFIG_DIR; mkdir -p $CONFIG_DIR; curl -L $VERIFIER_URL -o $CONFIG_DIR/verifier; curl -L $LIBZKP_URL -o $CONFIG_DIR/libzkp.so; echo -e "chain:\n  endpoint: \"testnet-node-1.prover.xyz:9090\"\n  chain_id: \"cysicmint_9000-1\"\n  gas_coin: \"cysic\"\n  gas_price: 10\nclaim_reward_address: \"$claim_reward_address\"\nserver:\n  cysic_endpoint: \"https://api-testnet.prover.xyz\"" > $CONFIG_DIR/config.yaml; chmod +x $CONFIG_DIR/verifier; echo -e "#!/bin/bash\nexport LD_LIBRARY_PATH=$CONFIG_DIR:$LD_LIBRARY_PATH\n$CONFIG_DIR/verifier" > $CONFIG_DIR/start.sh; chmod +x $CONFIG_DIR/start.sh; $CONFIG_DIR/start.sh
+# Prompt for input
+read -p "Enter your EVM address to claim rewards: " claim_reward_address
+
+# Remove existing directory if it exists
+rm -rf $CONFIG_DIR
+
+# Create the directory
+mkdir -p $CONFIG_DIR
+
+# Download necessary files
+curl -L $VERIFIER_URL -o $CONFIG_DIR/verifier
+curl -L $LIBZKP_URL -o $CONFIG_DIR/libzkp.so
+
+# Create configuration file with user input
+cat <<EOF > $CONFIG_FILE
+# Not Change
+chain:
+  # Not Change
+  endpoint: "testnet-node-1.prover.xyz:9090"
+  # Not Change
+  chain_id: "cysicmint_9000-1"
+  # Not Change
+  gas_coin: "cysic"
+  # Not Change
+  gas_price: 10
+  # Modify Here： ! Your Address (EVM) submitted to claim rewards
+claim_reward_address: "$claim_reward_address"
+
+server:
+  # don't modify this
+  cysic_endpoint: "https://api-testnet.prover.xyz"
+EOF
+
+# Verify if config file is created
+if [ ! -f "$CONFIG_FILE" ]; then
+  echo "Config file $CONFIG_FILE not found!"
+  exit 1
+fi
+
+# Make verifier executable
+chmod +x $CONFIG_DIR/verifier
+
+# Create and configure the start script
+cat <<EOF > $START_SCRIPT
+#!/bin/bash
+# Set library path and start the verifier
+export LD_LIBRARY_PATH=$CONFIG_DIR:$LD_LIBRARY_PATH
+export CHAIN_ID=534352
+$CONFIG_DIR/verifier
+EOF
+
+# Make the start script executable
+chmod +x $START_SCRIPT
+
+# Run the start script
+$START_SCRIPT
