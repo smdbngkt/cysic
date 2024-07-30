@@ -22,7 +22,7 @@ echo -e "${CYAN} Cysic Testnet Node Installation ${NC}"
 
 # Remove old directory and create a new one
 rm -rf ~/cysic-verifier
-mkdir -p ~/cysic-verifier
+mkdir ~/cysic-verifier
 
 # Download files
 echo "Downloading verifier and libzkp.so..."
@@ -79,7 +79,8 @@ EOF
 # Make start.sh executable
 chmod +x start.sh
 
-# Check dependencies
+# Check for missing dependencies
+echo -e "${CYAN}Checking for missing dependencies...${NC}"
 missing_deps=$(ldd ./verifier | grep "not found")
 if [[ -n "$missing_deps" ]]; then
   echo -e "${RED}Some dependencies are missing:${NC}"
@@ -89,7 +90,10 @@ if [[ -n "$missing_deps" ]]; then
 fi
 
 # Run the verifier
+echo -e "${CYAN}Starting the verifier...${NC}"
 ./start.sh
+
+# Check if verifier started successfully
 if [[ $? -ne 0 ]]; then
   echo -e "${RED}Verifier failed to start${NC}"
   exit 1
