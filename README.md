@@ -36,7 +36,7 @@
 
 
 ```bash
-  curl -O https://raw.githubusercontent.com/smdbngkt/cysic/main/install.sh
+curl -O https://raw.githubusercontent.com/smdbngkt/cysic/main/install.sh
 ```
     
 ### 2. Make the Script Executable
@@ -44,7 +44,7 @@
 #### After downloading the script, you need to make it executable. Run:
 
 ```bash
-  chmod +x install.sh
+chmod +x install.sh
 ```
 
 ### 3. Run the Script
