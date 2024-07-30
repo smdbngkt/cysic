@@ -18,29 +18,19 @@ echo -e "${MAGENTA}  __/  \\\\  |: \\.        |(| (___\\ || ${NC}"
 echo -e "${CYAN} /\" \\   :) |.  \\    /:  ||:       :) ${NC}"
 echo -e "${RED}(_______/  |___|\\__/|___|(________/  ${NC}"
 
+# Remove old directory and create new one
+rm -rf ~/cysic-verifier
+mkdir ~/cysic-verifier
 
-# Define variables
-VERIFIER_URL="https://cysic-verifiers.oss-accelerate.aliyuncs.com/verifier_linux"
-LIBZKP_URL="https://cysic-verifiers.oss-accelerate.aliyuncs.com/libzkp.so"
-CONFIG_DIR="$HOME/cysic-verifier"
-CONFIG_FILE="$CONFIG_DIR/config.yaml"
-START_SCRIPT="$CONFIG_DIR/start.sh"
+# Download files
+curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/verifier_linux > ~/cysic-verifier/verifier
+curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/libzkp.so > ~/cysic-verifier/libzkp.so
 
-# Prompt for input
-read -p "Enter your EVM address to claim rewards: " claim_reward_address
+# Prompt for claim reward address
+read -p "Enter claim reward address: " address
 
-# Remove existing directory if it exists
-rm -rf $CONFIG_DIR
-
-# Create the directory
-mkdir -p $CONFIG_DIR
-
-# Download necessary files
-curl -L $VERIFIER_URL -o $CONFIG_DIR/verifier
-curl -L $LIBZKP_URL -o $CONFIG_DIR/libzkp.so
-
-# Create configuration file with user input
-cat <<EOF > $CONFIG_FILE
+# Create config.yaml
+cat <<EOF > ~/cysic-verifier/config.yaml
 # Not Change
 chain:
   # Not Change
@@ -52,33 +42,24 @@ chain:
   # Not Change
   gas_price: 10
   # Modify Here： ! Your Address (EVM) submitted to claim rewards
-claim_reward_address: "$claim_reward_address"
+claim_reward_address: "$address"
 
 server:
   # don't modify this
   cysic_endpoint: "https://api-testnet.prover.xyz"
 EOF
 
-# Verify if config file is created
-if [ ! -f "$CONFIG_FILE" ]; then
-  echo "Config file $CONFIG_FILE not found!"
-  exit 1
-fi
+# Change to cysic-verifier directory
+cd ~/cysic-verifier/
 
 # Make verifier executable
-chmod +x $CONFIG_DIR/verifier
+chmod +x verifier
 
-# Create and configure the start script
-cat <<EOF > $START_SCRIPT
-#!/bin/bash
-# Set library path and start the verifier
-export LD_LIBRARY_PATH=$CONFIG_DIR:$LD_LIBRARY_PATH
-export CHAIN_ID=534352
-$CONFIG_DIR/verifier
-EOF
+# Create start.sh
+echo "LD_LIBRARY_PATH=.:~/miniconda3/lib:\$LD_LIBRARY_PATH CHAIN_ID=534352 ./verifier" > start.sh
 
-# Make the start script executable
-chmod +x $START_SCRIPT
+# Make start.sh executable
+chmod +x start.sh
 
-# Run the start script
-$START_SCRIPT
+# Run the verifier
+./start.sh
