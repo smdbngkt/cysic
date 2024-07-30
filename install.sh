@@ -18,19 +18,24 @@ echo -e "${MAGENTA}  __/  \\\\  |: \\.        |(| (___\\ || ${NC}"
 echo -e "${CYAN} /\" \\   :) |.  \\    /:  ||:       :) ${NC}"
 echo -e "${RED}(_______/  |___|\\__/|___|(________/  ${NC}"
 
-# Remove old directory and create new one
+# Define variables
+VERIFIER_URL="https://cysic-verifiers.oss-accelerate.aliyuncs.com/verifier_linux"
+LIBZKP_URL="https://cysic-verifiers.oss-accelerate.aliyuncs.com/libzkp.so"
+CONFIG_FILE="cysic-verifier/config.yaml"
+START_SCRIPT="cysic-verifier/start.sh"
+
+# Remove existing directory if it exists
 rm -rf ~/cysic-verifier
-mkdir ~/cysic-verifier
 
-# Download files
-curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/verifier_linux > ~/cysic-verifier/verifier
-curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/libzkp.so > ~/cysic-verifier/libzkp.so
+# Create the directory
+mkdir -p ~/cysic-verifier
 
-# Prompt for claim reward address
-read -p "Enter claim reward address: " address
+# Download necessary files
+curl -L $VERIFIER_URL -o ~/cysic-verifier/verifier
+curl -L $LIBZKP_URL -o ~/cysic-verifier/libzkp.so
 
-# Create config.yaml
-cat <<EOF > ~/cysic-verifier/config.yaml
+# Create configuration file
+cat <<EOF > $CONFIG_FILE
 # Not Change
 chain:
   # Not Change
@@ -42,27 +47,20 @@ chain:
   # Not Change
   gas_price: 10
   # Modify Here： ! Your Address (EVM) submitted to claim rewards
-claim_reward_address: "$address"
+claim_reward_address: "0x696969696969"
 
 server:
   # don't modify this
   cysic_endpoint: "https://api-testnet.prover.xyz"
 EOF
 
-# Change to cysic-verifier directory
-cd ~/cysic-verifier/
-
 # Make verifier executable
-chmod +x verifier
+chmod +x ~/cysic-verifier/verifier
 
-# Create start.sh
-cat <<EOF > start.sh
-#!/bin/bash
-LD_LIBRARY_PATH=.:~/miniconda3/lib:\$LD_LIBRARY_PATH CHAIN_ID=534352 ./verifier
-EOF
+# Create and configure the start script
+echo 'LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH ./verifier' > $START_SCRIPT
+chmod +x $START_SCRIPT
 
-# Make start.sh executable
-chmod +x start.sh
+# Start the verifier
+$START_SCRIPT
 
-# Run the verifier
-./start.sh
