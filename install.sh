@@ -9,27 +9,50 @@ MAGENTA='\033[0;35m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
+# Log file
+LOGFILE=~/cysic-verifier/install.log
+
+# Logging function
+log() {
+    echo -e "$(date +'%Y-%m-%d %H:%M:%S') - $1" | tee -a $LOGFILE
+}
+
 # Display ASCII art
-echo -e "${RED}  ________  ___      ___  ________   ${NC}"
-echo -e "${GREEN} /\"       )|\"  \\    /\"  ||\"      \"\\  ${NC}"
-echo -e "${YELLOW}(:   \\___/  \\   \\  //   |(.  ___  :) ${NC}"
-echo -e "${BLUE} \\___  \\    /\\\\  \\/.    ||: \\   ) || ${NC}"
-echo -e "${MAGENTA}  __/  \\\\  |: \\.        |(| (___\\ || ${NC}"
-echo -e "${CYAN} /\" \\   :) |.  \\    /:  ||:       :) ${NC}"
-echo -e "${RED}(_______/  |___|\\__/|___|(________/  ${NC}"
+log "${RED}  ________  ___      ___  ________   ${NC}"
+log "${GREEN} /\"       )|\"  \\    /\"  ||\"      \"\\  ${NC}"
+log "${YELLOW}(:   \\___/  \\   \\  //   |(.  ___  :) ${NC}"
+log "${BLUE} \\___  \\    /\\\\  \\/.    ||: \\   ) || ${NC}"
+log "${MAGENTA}  __/  \\\\  |: \\.        |(| (___\\ || ${NC}"
+log "${CYAN} /\" \\   :) |.  \\    /:  ||:       :) ${NC}"
+log "${RED}(_______/  |___|\\__/|___|(________/  ${NC}"
 
 # Remove old directory and create new one
+log "Removing old directory and creating new one..."
 rm -rf ~/cysic-verifier
 mkdir ~/cysic-verifier
 
 # Download files
-curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/verifier_linux > ~/cysic-verifier/verifier
-curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/libzkp.so > ~/cysic-verifier/libzkp.so
+log "Downloading verifier and libzkp.so..."
+if curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/verifier_linux > ~/cysic-verifier/verifier; then
+    log "Verifier downloaded successfully."
+else
+    log "Failed to download verifier."
+    exit 1
+fi
+
+if curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/libzkp.so > ~/cysic-verifier/libzkp.so; then
+    log "libzkp.so downloaded successfully."
+else
+    log "Failed to download libzkp.so."
+    exit 1
+fi
 
 # Prompt for claim reward address
 read -p "Enter claim reward address: " address
+log "Claim reward address entered: $address"
 
 # Create config.yaml
+log "Creating config.yaml..."
 cat <<EOF > ~/cysic-verifier/config.yaml
 # Not Change
 chain:
@@ -51,22 +74,37 @@ EOF
 
 # Verify that config.yaml was created
 if [ -f ~/cysic-verifier/config.yaml ]; then
-  echo "config.yaml created successfully."
+    log "config.yaml created successfully."
 else
-  echo "Failed to create config.yaml."
+    log "Failed to create config.yaml."
+    exit 1
 fi
 
 # Change to cysic-verifier directory
 cd ~/cysic-verifier/
+log "Changed directory to ~/cysic-verifier."
 
 # Make verifier executable
+log "Making verifier executable..."
 chmod +x verifier
 
 # Create start.sh
-echo "LD_LIBRARY_PATH=.:~/miniconda3/lib:\$LD_LIBRARY_PATH CHAIN_ID=534352 ./verifier" > start.sh
+log "Creating start.sh..."
+cat <<EOF > start.sh
+#!/bin/bash
+LD_LIBRARY_PATH=.:~/miniconda3/lib:\$LD_LIBRARY_PATH CHAIN_ID=534352 ./verifier
+EOF
 
 # Make start.sh executable
+log "Making start.sh executable..."
 chmod +x start.sh
 
 # Run the verifier
+log "Running the verifier..."
 ./start.sh
+if [ $? -eq 0 ]; then
+    log "Verifier started successfully."
+else
+    log "Failed to start the verifier."
+    exit 1
+fi
