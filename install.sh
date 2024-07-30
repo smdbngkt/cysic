@@ -63,7 +63,9 @@ chmod +x verifier
 # Create start.sh
 cat <<EOF > start.sh
 #!/bin/bash
-LD_LIBRARY_PATH=.:~/miniconda3/lib:\$LD_LIBRARY_PATH CHAIN_ID=534352 ./verifier
+export LD_LIBRARY_PATH=.:~/miniconda3/lib
+export CHAIN_ID=534352
+./verifier
 EOF
 
 # Make start.sh executable
