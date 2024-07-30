@@ -10,7 +10,12 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Log file
-LOGFILE=~/cysic-verifier/install.log
+LOGDIR=~/cysic-verifier
+LOGFILE=$LOGDIR/install.log
+
+# Create log directory and log file
+mkdir -p $LOGDIR
+echo -e "$(date +'%Y-%m-%d %H:%M:%S') - Starting Cysic Verifier Installation" > $LOGFILE
 
 # Logging function
 log() {
@@ -18,29 +23,29 @@ log() {
 }
 
 # Display ASCII art
-"${RED}  ________  ___      ___  ________   ${NC}"
-"${GREEN} /\"       )|\"  \\    /\"  ||\"      \"\\  ${NC}"
-"${YELLOW}(:   \\___/  \\   \\  //   |(.  ___  :) ${NC}"
-"${BLUE} \\___  \\    /\\\\  \\/.    ||: \\   ) || ${NC}"
-"${MAGENTA}  __/  \\\\  |: \\.        |(| (___\\ || ${NC}"
-"${CYAN} /\" \\   :) |.  \\    /:  ||:       :) ${NC}"
-"${RED}(_______/  |___|\\__/|___|(________/  ${NC}"
+log "${RED}  ________  ___      ___  ________   ${NC}"
+log "${GREEN} /\"       )|\"  \\    /\"  ||\"      \"\\  ${NC}"
+log "${YELLOW}(:   \\___/  \\   \\  //   |(.  ___  :) ${NC}"
+log "${BLUE} \\___  \\    /\\\\  \\/.    ||: \\   ) || ${NC}"
+log "${MAGENTA}  __/  \\\\  |: \\.        |(| (___\\ || ${NC}"
+log "${CYAN} /\" \\   :) |.  \\    /:  ||:       :) ${NC}"
+log "${RED}(_______/  |___|\\__/|___|(________/  ${NC}"
 
 # Remove old directory and create new one
 log "Removing old directory and creating new one..."
-rm -rf ~/cysic-verifier
-mkdir ~/cysic-verifier
+rm -rf $LOGDIR
+mkdir $LOGDIR
 
 # Download files
 log "Downloading verifier and libzkp.so..."
-if curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/verifier_linux > ~/cysic-verifier/verifier; then
+if curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/verifier_linux > $LOGDIR/verifier; then
     log "Verifier downloaded successfully."
 else
     log "Failed to download verifier."
     exit 1
 fi
 
-if curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/libzkp.so > ~/cysic-verifier/libzkp.so; then
+if curl -L https://cysic-verifiers.oss-accelerate.aliyuncs.com/libzkp.so > $LOGDIR/libzkp.so; then
     log "libzkp.so downloaded successfully."
 else
     log "Failed to download libzkp.so."
@@ -53,7 +58,7 @@ log "Claim reward address entered: $address"
 
 # Create config.yaml
 log "Creating config.yaml..."
-cat <<EOF > ~/cysic-verifier/config.yaml
+cat <<EOF > $LOGDIR/config.yaml
 # Not Change
 chain:
   # Not Change
@@ -73,7 +78,7 @@ server:
 EOF
 
 # Verify that config.yaml was created
-if [ -f ~/cysic-verifier/config.yaml ]; then
+if [ -f $LOGDIR/config.yaml ]; then
     log "config.yaml created successfully."
 else
     log "Failed to create config.yaml."
@@ -81,8 +86,8 @@ else
 fi
 
 # Change to cysic-verifier directory
-cd ~/cysic-verifier/
-log "Changed directory to ~/cysic-verifier."
+cd $LOGDIR
+log "Changed directory to $LOGDIR."
 
 # Make verifier executable
 log "Making verifier executable..."
