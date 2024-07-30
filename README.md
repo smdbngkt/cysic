@@ -36,7 +36,7 @@
 
 
 ```bash
-curl -O https://raw.githubusercontent.com/smdbngkt/cysic/main/install.sh
+  curl -O https://raw.githubusercontent.com/smdbngkt/cysic/main/install.sh
 ```
     
 ### 2. Make the Script Executable
@@ -44,7 +44,7 @@ curl -O https://raw.githubusercontent.com/smdbngkt/cysic/main/install.sh
 #### After downloading the script, you need to make it executable. Run:
 
 ```bash
-chmod +x install.sh
+  chmod +x install.sh
 ```
 
 ### 3. Run the Script
@@ -55,6 +55,44 @@ chmod +x install.sh
   ./install.sh
 ```
 
+### 4. Using screen to Keep the Process Running
+
+#### To ensure the installation and setup process continues running even if you disconnect from your terminal, you can use the screen utility. Follow these steps:
+
+##### **a. Install screen (if not already installed)**
+
+*For Ubuntu/Debian:*
+
+```bash
+sudo apt-get install screen
+```
+*For CentOS/RHEL:*
+
+```bash
+sudo yum install screen
+```
+##### **b. Start a screen session**
+
+```bash
+screen -S cysic-installation
+```
+##### **c. Run the installation script within the screen session**
+
+```bash
+./install.sh
+```
+##### **d. Detach from the screen sessio**
+
+*Press Ctrl+a followed by d to detach from the session while keeping it running in the background.*
+
+##### **e. Reattach to the screen session**
+
+*To reattach to your screen session, use:*
+
+```bash
+screen -r cysic-installation
+```
+
 ### Additional Resources
 
-For more information, refer to the [official Cysic Testnet Documentation](https://medium.com/@cysic/join-the-cysic-testnet-as-a-verifier-7b9f31674b41) or join our community [discord](https://discord.gg/9vxGzxSV) for support.
+For more information, refer to the [official Cysic Testnet Documentation](https://katherineoelsner.com/](https://medium.com/@cysic/join-the-cysic-testnet-as-a-verifier-7b9f31674b41) or join our community [discord](https://discord.gg/9vxGzxSV) for support.
