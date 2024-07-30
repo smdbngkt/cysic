@@ -18,11 +18,13 @@ echo -e "${MAGENTA}  __/  \\\\  |: \\.        |(| (___\\ || ${NC}"
 echo -e "${CYAN} /\" \\   :) |.  \\    /:  ||:       :) ${NC}"
 echo -e "${RED}(_______/  |___|\\__/|___|(________/  ${NC}"
 
+#!/bin/bash
+
 # Define variables
 VERIFIER_URL="https://cysic-verifiers.oss-accelerate.aliyuncs.com/verifier_linux"
 LIBZKP_URL="https://cysic-verifiers.oss-accelerate.aliyuncs.com/libzkp.so"
-CONFIG_FILE="cysic-verifier/config.yaml"
-START_SCRIPT="cysic-verifier/start.sh"
+CONFIG_FILE="~/cysic-verifier/config.yaml"
+START_SCRIPT="~/cysic-verifier/start.sh"
 
 # Remove existing directory if it exists
 rm -rf ~/cysic-verifier
@@ -35,7 +37,7 @@ curl -L $VERIFIER_URL -o ~/cysic-verifier/verifier
 curl -L $LIBZKP_URL -o ~/cysic-verifier/libzkp.so
 
 # Create configuration file
-cat <<EOF > $CONFIG_FILE
+cat <<EOF > ~/cysic-verifier/config.yaml
 # Not Change
 chain:
   # Not Change
@@ -58,9 +60,15 @@ EOF
 chmod +x ~/cysic-verifier/verifier
 
 # Create and configure the start script
-echo 'LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH ./verifier' > $START_SCRIPT
-chmod +x $START_SCRIPT
+cat <<EOF > ~/cysic-verifier/start.sh
+#!/bin/bash
+# Set library path and start the verifier
+LD_LIBRARY_PATH=~/cysic-verifier:$LD_LIBRARY_PATH ~/cysic-verifier/verifier
+EOF
 
-# Start the verifier
-$START_SCRIPT
+# Make the start script executable
+chmod +x ~/cysic-verifier/start.sh
+
+# Run the start script
+~/cysic-verifier/start.sh
 
